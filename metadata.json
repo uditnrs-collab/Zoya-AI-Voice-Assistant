@@ -1,0 +1,11 @@
+{
+  "name": "Zoya - AI Voice Assistant",
+  "description": "An intelligent, loyal AI voice assistant with deep mastery of Shrimad Bhagavad Gita and the 18 Mahapuranas created for Boss Udit.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
