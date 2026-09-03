@@ -73,7 +73,7 @@ class ZoyaMainViewModel(application: Application) : AndroidViewModel(application
              onDoneSpeaking = {
     _uiState.update { it.copy(voiceState = ZoyaVoiceState.IDLE) }
              }
-            },
+
             onErrorSpeaking = {
                 _uiState.update { it.copy(voiceState = ZoyaVoiceState.IDLE) }
             }
