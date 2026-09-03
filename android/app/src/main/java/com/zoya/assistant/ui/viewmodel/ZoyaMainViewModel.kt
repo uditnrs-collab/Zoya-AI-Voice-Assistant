@@ -70,10 +70,9 @@ class ZoyaMainViewModel(application: Application) : AndroidViewModel(application
             onStartSpeaking = {
                 _uiState.update { it.copy(voiceState = ZoyaVoiceState.SPEAKING) }
             },
-            onDoneSpeaking = {
-                _uiState.update { it.copy(voiceState = ZoyaVoiceState.IDLE) }
-                // Automatically rearm listening after speaking completes
-                speechRecognizer?.startListening()
+             onDoneSpeaking = {
+    _uiState.update { it.copy(voiceState = ZoyaVoiceState.IDLE) }
+             }
             },
             onErrorSpeaking = {
                 _uiState.update { it.copy(voiceState = ZoyaVoiceState.IDLE) }
