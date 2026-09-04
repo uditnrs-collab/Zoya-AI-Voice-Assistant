@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.zoya.assistant.ui.components.ArcReactorVisualizer
 import com.zoya.assistant.ui.components.CalendarDialog
+import com.zoya.assistant.ui.components.GeminiSettingsDialog
 import com.zoya.assistant.ui.components.ThemeSettingsDialog
 import com.zoya.assistant.ui.components.ZoyaBottomControls
 import com.zoya.assistant.ui.components.ZoyaConversationView
@@ -52,14 +53,26 @@ fun ZoyaMainScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
+
                 // Header HUD
                 ZoyaHeader(
                     primaryColor = primaryColor,
                     isServiceRunning = uiState.isServiceRunning,
-                    onToggleService = { viewModel.toggleBackgroundService() },
-                    onOpenCalendar = { viewModel.setCalendarOpen(true) },
-                    onOpenTheme = { viewModel.setThemeDialogOpen(true) },
-                    onOpenVision = { viewModel.setVisionDialogOpen(true) }
+                    onToggleService = {
+                        viewModel.toggleBackgroundService()
+                    },
+                    onOpenCalendar = {
+                        viewModel.setCalendarOpen(true)
+                    },
+                    onOpenTheme = {
+                        viewModel.setThemeDialogOpen(true)
+                    },
+                    onOpenVision = {
+                        viewModel.setVisionDialogOpen(true)
+                    },
+                    onOpenSettings = {
+                        viewModel.setGeminiSettingsOpen(true)
+                    }
                 )
 
                 // Central Arc Reactor Visualizer
@@ -74,7 +87,9 @@ fun ZoyaMainScreen(
                         audioLevel = uiState.audioLevel,
                         primaryColor = primaryColor,
                         glowIntensity = glowFactor,
-                        onClick = { viewModel.toggleListening() }
+                        onClick = {
+                            viewModel.toggleListening()
+                        }
                     )
                 }
 
@@ -90,34 +105,65 @@ fun ZoyaMainScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Bottom Controls: Mic FAB, Text Prompt, Quick Chips
+                // Bottom Controls
                 ZoyaBottomControls(
                     voiceState = uiState.voiceState,
                     primaryColor = primaryColor,
-                    onMicClick = { viewModel.toggleListening() },
-                    onStopSpeech = { viewModel.stopSpeaking() },
-                    onSendCommand = { viewModel.handleUserCommand(it) }
+                    onMicClick = {
+                        viewModel.toggleListening()
+                    },
+                    onStopSpeech = {
+                        viewModel.stopSpeaking()
+                    },
+                    onSendCommand = {
+                        viewModel.handleUserCommand(it)
+                    }
                 )
             }
 
             // Calendar Modal Dialog
             CalendarDialog(
                 isOpen = uiState.showCalendarDialog,
-                onClose = { viewModel.setCalendarOpen(false) },
+                onClose = {
+                    viewModel.setCalendarOpen(false)
+                },
                 markedDates = uiState.markedDates,
-                onSaveMarkedDate = { viewModel.saveMarkedDate(it) },
-                onDeleteMarkedDate = { viewModel.deleteMarkedDate(it) },
+                onSaveMarkedDate = {
+                    viewModel.saveMarkedDate(it)
+                },
+                onDeleteMarkedDate = {
+                    viewModel.deleteMarkedDate(it)
+                },
                 primaryColor = primaryColor
             )
 
             // Theme Settings Modal Dialog
             ThemeSettingsDialog(
                 isOpen = uiState.showThemeDialog,
-                onClose = { viewModel.setThemeDialogOpen(false) },
+                onClose = {
+                    viewModel.setThemeDialogOpen(false)
+                },
                 currentTheme = uiState.themeColor,
                 currentGlow = uiState.glowIntensity,
-                onSelectTheme = { viewModel.setTheme(it) },
-                onGlowChange = { viewModel.setGlow(it) }
+                onSelectTheme = {
+                    viewModel.setTheme(it)
+                },
+                onGlowChange = {
+                    viewModel.setGlow(it)
+                }
+            )
+
+            // Gemini API Settings Modal Dialog
+            GeminiSettingsDialog(
+                isOpen = uiState.showGeminiSettings,
+                onClose = {
+                    viewModel.setGeminiSettingsOpen(false)
+                },
+                currentApiKey = uiState.geminiApiKey,
+                primaryColor = primaryColor,
+                onSaveApiKey = {
+                    viewModel.saveGeminiApiKey(it)
+                }
             )
         }
     }
