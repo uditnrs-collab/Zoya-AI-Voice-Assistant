@@ -32,6 +32,8 @@ data class ZoyaUiState(
     val showCalendarDialog: Boolean = false,
     val showThemeDialog: Boolean = false,
     val showVisionDialog: Boolean = false,
+    val showGeminiSettings: Boolean = false,
+    val geminiApiKey: String = "",
     val markedDates: List<CalendarMarkedDate> = emptyList()
 )
 
@@ -39,8 +41,10 @@ class ZoyaMainViewModel(application: Application) : AndroidViewModel(application
 
     private val prefs = PreferencesManager(application)
     private val calendarRepo = CalendarRepository(application)
-    private val geminiClient = GeminiApiClient(prefs.geminiApiKey)
-    private val commandEngine = ZoyaCommandEngine(
+
+    private var geminiClient = GeminiApiClient(prefs.geminiApiKey)
+
+    private var commandEngine = ZoyaCommandEngine(
         application,
         calendarRepo,
         geminiClient
@@ -51,6 +55,7 @@ class ZoyaMainViewModel(application: Application) : AndroidViewModel(application
             themeColor = prefs.themeColor,
             glowIntensity = prefs.glowIntensity,
             isServiceRunning = ZoyaForegroundService.isServiceRunning,
+            geminiApiKey = prefs.geminiApiKey,
             markedDates = calendarRepo.getMarkedDates()
         )
     )
@@ -260,6 +265,35 @@ class ZoyaMainViewModel(application: Application) : AndroidViewModel(application
     fun setVisionDialogOpen(open: Boolean) {
         _uiState.update {
             it.copy(showVisionDialog = open)
+        }
+    }
+
+    fun setGeminiSettingsOpen(open: Boolean) {
+        _uiState.update {
+            it.copy(showGeminiSettings = open)
+        }
+    }
+
+    fun saveGeminiApiKey(apiKey: String) {
+        val cleanKey = apiKey.trim()
+
+        prefs.geminiApiKey = cleanKey
+
+        // Recreate Gemini client with the newly saved API key
+        geminiClient = GeminiApiClient(cleanKey)
+
+        // Recreate command engine so it uses the new Gemini client
+        commandEngine = ZoyaCommandEngine(
+            getApplication(),
+            calendarRepo,
+            geminiClient
+        )
+
+        _uiState.update {
+            it.copy(
+                geminiApiKey = cleanKey,
+                showGeminiSettings = false
+            )
         }
     }
 
